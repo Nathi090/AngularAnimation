@@ -1,5 +1,8 @@
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 
-import { Component } from '@angular/core';
+import { trigger, transition } from '@angular/animations';
+
+import { slideAnimation, dissolveAnimation } from './animations';
 
 
 
@@ -58,17 +61,35 @@ import { Component } from '@angular/core';
               </div>
   
           </nav>
-          <div class="page">
+          <div class="page" [@routerAnimations]="prepareRouteTransition(outlet)">
 
-          <router-outlet></router-outlet>
+            <router-outlet #outlet="outlet"></router-outlet>
 
-      </div>
+        </div>
   
 
     `,
 
-    styles: [``]
+    styles: [``],
+    encapsulation: ViewEncapsulation.None,
+
+    animations: [
+
+        trigger('routerAnimations', [
+            transition('* => home', dissolveAnimation),
+            transition('* => *', slideAnimation)
+
+        ])
+
+    ]
 
 })
 
-export class AppComponent {}
+export class AppComponent {
+    prepareRouteTransition(outlet:any) {
+
+    const animation = outlet.activatedRouteData['animation'] || {};
+
+    return animation['value'] || null;
+
+}}
